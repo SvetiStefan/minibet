@@ -20,16 +20,24 @@ setting_file = os.path.join(BASE_DIR, 'bandit/setting.json')
 with open(setting_file, 'r') as f:
     setting = json.load(f)
 
+# SECURITY WARNING: don't run with debug turned on in production!
+try:
+    DEBUG = os.environ["DEBUG"] == "true"
+except:
+    DEBUG = False
+if DEBUG:
+    setting = setting['DEBUG']
+else:
+    setting = setting['PROD']
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = setting['SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+
+ALLOWED_HOSTS = setting['ALLOWED_HOSTS']
 
 
 # Application definition
@@ -78,13 +86,13 @@ WSGI_APPLICATION = 'bandit.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+DATABASES = setting['db']
 
 
 # Internationalization
